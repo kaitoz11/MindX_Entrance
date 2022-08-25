@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Picker</title>
+    <style>
+        body{
+            margin: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #text:hover, .btn:hover{
+            cursor: pointer;
+            background-color: rgb(0, 20, 110);
+            color: white;
+        }
+        #text{
+            position: fixed;
+            text-align: center;
+            top: 20%;
+            left: 40%;
+            font-size: 100px;
+            padding: 10px;
+            border: 1px solid black; 
+            border-radius: 17px;
+            background-color: white;
+        }
+        #canvas{
+            position: absolute;
+            background-color: rgb(red, green, blue);
+            width: 100%;
+            height: 100%;
+        }
+        .btns{
+            font-size: 50px;
+            margin-top: 20%;
+            display: flex;
+            justify-content: center;
+        }
+        .wrapper{
+            display: flex;
+            flex-direction: column;
+        }
+        .btn{
+            border: 1px solid black; 
+            border-radius: 17px;
+            background-color: white;
+            padding: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div id="canvas">
+        <div id="text">#FFFFFF</div>
+        <div class="btns">
+            <div class="wrapper">
+                <div id="rand" class="btn">Random</div>
+                
+                <label for="red">Red: </label><input type="range" name="red" id="R" min="0" max="255">
+                <label for="green">Green: </label><input type="range" name="green" id="G" min="0" max="255">
+                <label for="blue">Blue: </label><input type="range" name="blue" id="B" min="0" max="255">
+            
+            </div>
+
+        </div>
+    </div>
+    
+    <script>
+        class rgb{
+            constructor(red=255, green=255, blue=255){
+                this.red=parseInt(red)%256;
+                this.green=parseInt(green)%256;
+                this.blue=parseInt(blue)%256;
+            }
+            setRed(red){
+                this.red=parseInt(red)%256;
+            }
+
+            setGreen(green){
+                this.green=parseInt(green)%256;
+            }
+
+            setBlue(blue){
+                this.blue=parseInt(blue)%256;
+            }
+
+            random(){
+                this.red = parseInt(Math.random()*1000)%256;
+                this.green = parseInt(Math.random()*1000)%256;
+                this.blue = parseInt(Math.random()*1000)%256;
+            }
+
+            style(){
+                return `rgb(${this.red}, ${this.green}, ${this.blue})`
+            }
+
+            getHex(){
+                return `#${(this.red.toString(16)).padStart(2,"0")}${this.green.toString(16).padStart(2,"0")}${this.blue.toString(16).padStart(2,"0")}`.toUpperCase()
+            }
+        }
+
+        const rand=document.getElementById("rand")
+        const canvas=document.getElementById("canvas")
+        const texts=document.getElementById("text")
+        const RedInput=document.getElementById("R")
+        const GreenInput=document.getElementById("G")
+        const BlueInput=document.getElementById("B")
+        const RGB = new rgb()
+        function update(){
+            let s = canvas.style;
+            s.backgroundColor = RGB.style()
+            texts.innerText=RGB.getHex()
+        }
+        
+        rand.addEventListener("click", function(){
+            RGB.random()
+            update()
+            RedInput.value=RGB.red
+            GreenInput.value=RGB.green
+            BlueInput.value=RGB.blue
+        })
+        texts.addEventListener("click", function(){
+            navigator.clipboard.writeText(RGB.getHex())
+            texts.innerText="Copied!"
+            setTimeout(()=>{
+                texts.innerText=RGB.getHex()
+            },1000)
+        })
+
+        RedInput.addEventListener("input", function(){
+            RGB.setRed(RedInput.value)
+            update()
+        })
+
+        GreenInput.addEventListener("input", function(){
+            RGB.setGreen(GreenInput.value)
+            update()
+        })
+        BlueInput.addEventListener("input", function(){
+            RGB.setBlue(BlueInput.value)
+            update()
+        })
+        
+    </script>
+</body>
+</html>
